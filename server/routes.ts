@@ -28,6 +28,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/config", async (req, res) => {
     try {
       const validatedData = updateConfigSchema.parse(req.body);
+      
+      if (!validatedData.telegramBotToken || !validatedData.telegramChatId) {
+        return res.status(400).json({ 
+          error: "Telegram bot token and chat ID are required" 
+        });
+      }
+
+      if (!validatedData.forumUrl) {
+        return res.status(400).json({ 
+          error: "Forum URL is required" 
+        });
+      }
+
       const config = await storage.updateConfig(validatedData);
       
       const currentStatus = await storage.getStatus();

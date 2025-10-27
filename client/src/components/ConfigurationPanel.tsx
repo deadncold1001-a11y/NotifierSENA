@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Key, Hash, Link2, Clock, Send } from "lucide-react";
@@ -37,16 +37,28 @@ export function ConfigurationPanel({
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm<UpdateConfig>({
     resolver: zodResolver(updateConfigSchema),
     defaultValues: {
-      telegramBotToken: config?.telegramBotToken || "",
-      telegramChatId: config?.telegramChatId || "",
-      forumUrl: config?.forumUrl || "https://zajuna.sena.edu.co/zajuna/mod/forum/view.php?id=5024822",
-      checkInterval: config?.checkInterval || 30,
+      telegramBotToken: "",
+      telegramChatId: "",
+      forumUrl: "https://zajuna.sena.edu.co/zajuna/mod/forum/view.php?id=5024822",
+      checkInterval: 30,
     },
   });
+
+  useEffect(() => {
+    if (config) {
+      reset({
+        telegramBotToken: config.telegramBotToken,
+        telegramChatId: config.telegramChatId,
+        forumUrl: config.forumUrl,
+        checkInterval: config.checkInterval,
+      });
+    }
+  }, [config, reset]);
 
   const checkInterval = watch("checkInterval");
 
