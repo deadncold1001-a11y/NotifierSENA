@@ -1,10 +1,10 @@
-import cron from "node-cron";
+import cron, { type ScheduledTask } from "node-cron";
 import { storage } from "../storage";
 import { scraperService } from "./scraper";
 import { telegramService } from "./telegram";
 
 export class MonitorService {
-  private cronJob: cron.ScheduledTask | null = null;
+  private cronJob: ScheduledTask | null = null;
   private isRunning: boolean = false;
   private watchdogInterval: NodeJS.Timeout | null = null;
 
