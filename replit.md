@@ -28,12 +28,17 @@ This application replaces the original Python monitoring scripts with a modern w
 - ✅ Beautiful, responsive UI following Material Design 3 principles
 
 ## Recent Changes
-**October 27, 2025**
-- Initial MVP implementation completed
-- Fixed critical form persistence bug in ConfigurationPanel
-- Added backend validation to prevent empty configuration saves
-- Comprehensive e2e testing passed for all core features
-- UI implements design guidelines with status-first visibility
+**October 27, 2025 - v1.1**
+- ✅ Added PostgreSQL database persistence - data now survives server restarts
+- ✅ Migrated from in-memory storage to Drizzle ORM
+- ✅ Configuration, status, and notification history now persisted in database
+
+**October 27, 2025 - v1.0**
+- ✅ Initial MVP implementation completed
+- ✅ Fixed critical form persistence bug in ConfigurationPanel
+- ✅ Added backend validation to prevent empty configuration saves
+- ✅ Comprehensive e2e testing passed for all core features
+- ✅ UI implements design guidelines with status-first visibility
 
 ## Project Architecture
 
@@ -51,7 +56,8 @@ This application replaces the original Python monitoring scripts with a modern w
 - **Web Scraping:** Cheerio (HTML parsing) + Axios (HTTP)
 - **Scheduling:** node-cron (background polling)
 - **Telegram:** node-telegram-bot-api
-- **Storage:** In-memory (MemStorage) - data resets on server restart
+- **Database:** PostgreSQL (Neon) with Drizzle ORM
+- **Storage:** Persistent database storage - data survives server restarts
 
 ### Key Design Patterns
 - **Schema-First Development:** Shared TypeScript types between frontend/backend
@@ -150,10 +156,9 @@ client/src/
 - **Real-time Updates:** Auto-refresh status every 5 seconds, notifications every 10 seconds
 
 ## Known Limitations
-1. **In-Memory Storage:** All data resets on server restart (notifications, uptime, config changes)
-2. **Single Instance:** Only one monitoring service can run at a time
-3. **SSL Verification:** Disabled for zajuna.sena.edu.co due to certificate issues
-4. **No Persistence:** Notification history limited to current session
+1. **Single Instance:** Only one monitoring service can run at a time
+2. **SSL Verification:** Disabled for zajuna.sena.edu.co due to certificate issues
+3. **Single Monitor:** Currently supports monitoring one forum URL at a time
 
 ## Future Enhancements (Not in MVP)
 - PostgreSQL database for persistent storage

@@ -5,8 +5,12 @@ import {
   type InsertNotification,
   type ServiceStatus,
   type InsertServiceStatus,
+  monitoringConfig,
+  notifications,
+  serviceStatus,
 } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   getConfig(): Promise<MonitoringConfig | undefined>;
@@ -22,125 +26,124 @@ export interface IStorage {
   setLastPostTitle(title: string): Promise<void>;
 }
 
-export class MemStorage implements IStorage {
-  private config: MonitoringConfig | null;
-  private status: ServiceStatus | null;
-  private notifications: Map<string, Notification>;
-
-  constructor() {
-    this.config = null;
-    this.status = null;
-    this.notifications = new Map();
-    
-    this.initializeDefaults();
-  }
-
-  private async initializeDefaults() {
-    this.status = {
-      id: randomUUID(),
-      isRunning: false,
-      lastCheckAt: null,
-      lastSuccessfulCheckAt: null,
-      totalNotificationsSent: 0,
-      serviceStartedAt: null,
-      lastError: null,
-      updatedAt: new Date(),
-    };
-
-    this.config = {
-      id: randomUUID(),
-      telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || "",
-      telegramChatId: process.env.TELEGRAM_CHAT_ID || "",
-      forumUrl: "https://zajuna.sena.edu.co/zajuna/mod/forum/view.php?id=5024822",
-      checkInterval: 30,
-      isActive: false,
-      lastPostTitle: null,
-      updatedAt: new Date(),
-    };
-  }
-
-  async getConfig(): Promise<MonitoringConfig | undefined> {
-    return this.config || undefined;
-  }
-
-  async updateConfig(configData: Partial<InsertMonitoringConfig>): Promise<MonitoringConfig> {
-    if (!this.config) {
-      this.config = {
-        id: randomUUID(),
-        telegramBotToken: "",
-        telegramChatId: "",
-        forumUrl: "",
+export class DbStorage implements IStorage {
+  async initialize() {
+    const existingConfig = await db.query.monitoringConfig.findFirst();
+    if (!existingConfig) {
+      await db.insert(monitoringConfig).values({
+        telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || "",
+        telegramChatId: process.env.TELEGRAM_CHAT_ID || "",
+        forumUrl: "https://zajuna.sena.edu.co/zajuna/mod/forum/view.php?id=5024822",
         checkInterval: 30,
         isActive: false,
         lastPostTitle: null,
-        updatedAt: new Date(),
-      };
+      });
     }
 
-    this.config = {
-      ...this.config,
-      ...configData,
-      updatedAt: new Date(),
-    };
-
-    return this.config;
-  }
-
-  async getStatus(): Promise<ServiceStatus | undefined> {
-    return this.status || undefined;
-  }
-
-  async updateStatus(statusData: Partial<InsertServiceStatus>): Promise<ServiceStatus> {
-    if (!this.status) {
-      this.status = {
-        id: randomUUID(),
+    const existingStatus = await db.query.serviceStatus.findFirst();
+    if (!existingStatus) {
+      await db.insert(serviceStatus).values({
         isRunning: false,
         lastCheckAt: null,
         lastSuccessfulCheckAt: null,
         totalNotificationsSent: 0,
         serviceStartedAt: null,
         lastError: null,
-        updatedAt: new Date(),
-      };
+      });
+    }
+  }
+
+  async getConfig(): Promise<MonitoringConfig | undefined> {
+    return await db.query.monitoringConfig.findFirst();
+  }
+
+  async updateConfig(configData: Partial<InsertMonitoringConfig>): Promise<MonitoringConfig> {
+    const existing = await this.getConfig();
+    
+    if (existing) {
+      const [updated] = await db
+        .update(monitoringConfig)
+        .set({ ...configData, updatedAt: new Date() })
+        .where(eq(monitoringConfig.id, existing.id))
+        .returning();
+      return updated;
     }
 
-    this.status = {
-      ...this.status,
-      ...statusData,
-      updatedAt: new Date(),
-    };
+    const [created] = await db
+      .insert(monitoringConfig)
+      .values({
+        telegramBotToken: configData.telegramBotToken || "",
+        telegramChatId: configData.telegramChatId || "",
+        forumUrl: configData.forumUrl || "",
+        checkInterval: configData.checkInterval || 30,
+        isActive: configData.isActive || false,
+        lastPostTitle: configData.lastPostTitle || null,
+      })
+      .returning();
+    return created;
+  }
 
-    return this.status;
+  async getStatus(): Promise<ServiceStatus | undefined> {
+    return await db.query.serviceStatus.findFirst();
+  }
+
+  async updateStatus(statusData: Partial<InsertServiceStatus>): Promise<ServiceStatus> {
+    const existing = await this.getStatus();
+    
+    if (existing) {
+      const [updated] = await db
+        .update(serviceStatus)
+        .set({ ...statusData, updatedAt: new Date() })
+        .where(eq(serviceStatus.id, existing.id))
+        .returning();
+      return updated;
+    }
+
+    const [created] = await db
+      .insert(serviceStatus)
+      .values({
+        isRunning: statusData.isRunning || false,
+        lastCheckAt: statusData.lastCheckAt || null,
+        lastSuccessfulCheckAt: statusData.lastSuccessfulCheckAt || null,
+        totalNotificationsSent: statusData.totalNotificationsSent || 0,
+        serviceStartedAt: statusData.serviceStartedAt || null,
+        lastError: statusData.lastError || null,
+      })
+      .returning();
+    return created;
   }
 
   async addNotification(notificationData: InsertNotification): Promise<Notification> {
-    const id = randomUUID();
-    const notification: Notification = {
-      id,
-      ...notificationData,
-      createdAt: new Date(),
-    };
-
-    this.notifications.set(id, notification);
-    return notification;
+    const [created] = await db
+      .insert(notifications)
+      .values(notificationData)
+      .returning();
+    return created;
   }
 
   async getNotifications(limit: number = 50): Promise<Notification[]> {
-    const allNotifications = Array.from(this.notifications.values());
-    return allNotifications
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, limit);
+    return await db.query.notifications.findMany({
+      orderBy: [desc(notifications.createdAt)],
+      limit,
+    });
   }
 
   async getLastPostTitle(): Promise<string | null> {
-    return this.config?.lastPostTitle || null;
+    const config = await this.getConfig();
+    return config?.lastPostTitle || null;
   }
 
   async setLastPostTitle(title: string): Promise<void> {
-    if (this.config) {
-      this.config.lastPostTitle = title;
+    const existing = await this.getConfig();
+    if (existing) {
+      await db
+        .update(monitoringConfig)
+        .set({ lastPostTitle: title })
+        .where(eq(monitoringConfig.id, existing.id));
     }
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DbStorage();
+
+storage.initialize().catch(console.error);
