@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --button-outline: rgba(0, 0, 0, 0.10);
+  --badge-outline: rgba(0, 0, 0, 0.05);
+  --opaque-button-border-intensity: -10;
+  --elevate-1: rgba(0, 0, 0, 0.03);
+  --elevate-2: rgba(0, 0, 0, 0.07);
+
+  --background: 0 0% 100%;
+  --foreground: 210 12% 16%;
+  --border: 210 12% 88%;
+  --card: 210 6% 98%;
+  --card-foreground: 210 12% 16%;
+  --card-border: 210 8% 94%;
+  --sidebar: 210 6% 97%;
+  --sidebar-foreground: 210 12% 16%;
+  --sidebar-border: 210 8% 92%;
+  --sidebar-primary: 204 88% 53%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 206 15% 90%;
+  --sidebar-accent-foreground: 204 88% 40%;
+  --sidebar-ring: 204 88% 53%;
+  --popover: 210 8% 96%;
+  --popover-foreground: 210 12% 16%;
+  --popover-border: 210 10% 92%;
+  --primary: 204 88% 53%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 8% 88%;
+  --secondary-foreground: 210 12% 16%;
+  --muted: 210 10% 92%;
+  --muted-foreground: 210 10% 40%;
+  --accent: 206 15% 90%;
+  --accent-foreground: 204 88% 40%;
+  --destructive: 356 91% 54%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 210 20% 82%;
+  --ring: 204 88% 53%;
+  --chart-1: 204 88% 53%;
+  --chart-2: 160 100% 36%;
+  --chart-3: 42 93% 56%;
+  --chart-4: 147 79% 42%;
+  --chart-5: 341 75% 51%;
+
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: "JetBrains Mono", Menlo, Monaco, "Courier New", monospace;
+  --radius: 0.75rem;
+  --shadow-2xs: 0px 1px 2px 0px hsl(210 12% 16% / 0.04);
+  --shadow-xs: 0px 1px 3px 0px hsl(210 12% 16% / 0.06);
+  --shadow-sm: 0px 2px 4px -1px hsl(210 12% 16% / 0.06), 0px 1px 2px -1px hsl(210 12% 16% / 0.04);
+  --shadow: 0px 4px 6px -1px hsl(210 12% 16% / 0.08), 0px 2px 4px -2px hsl(210 12% 16% / 0.06);
+  --shadow-md: 0px 6px 8px -2px hsl(210 12% 16% / 0.10), 0px 4px 6px -2px hsl(210 12% 16% / 0.08);
+  --shadow-lg: 0px 10px 15px -3px hsl(210 12% 16% / 0.12), 0px 4px 6px -4px hsl(210 12% 16% / 0.08);
+  --shadow-xl: 0px 20px 25px -5px hsl(210 12% 16% / 0.14), 0px 8px 10px -6px hsl(210 12% 16% / 0.10);
+  --shadow-2xl: 0px 25px 50px -12px hsl(210 12% 16% / 0.20);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+}
+
+.dark {
+  --button-outline: rgba(255, 255, 255, 0.10);
+  --badge-outline: rgba(255, 255, 255, 0.05);
+  --opaque-button-border-intensity: 8;
+  --elevate-1: rgba(255, 255, 255, 0.04);
+  --elevate-2: rgba(255, 255, 255, 0.09);
+
+  --background: 210 6% 8%;
+  --foreground: 210 6% 92%;
+  --border: 210 8% 16%;
+  --card: 210 6% 10%;
+  --card-foreground: 210 6% 92%;
+  --card-border: 210 8% 14%;
+  --sidebar: 210 6% 9%;
+  --sidebar-foreground: 210 6% 92%;
+  --sidebar-border: 210 8% 13%;
+  --sidebar-primary: 204 88% 53%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 206 70% 12%;
+  --sidebar-accent-foreground: 204 88% 65%;
+  --sidebar-ring: 204 88% 53%;
+  --popover: 210 8% 12%;
+  --popover-foreground: 210 6% 92%;
+  --popover-border: 210 10% 16%;
+  --primary: 204 88% 53%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 8% 16%;
+  --secondary-foreground: 210 6% 92%;
+  --muted: 210 10% 14%;
+  --muted-foreground: 210 10% 60%;
+  --accent: 206 15% 14%;
+  --accent-foreground: 204 88% 65%;
+  --destructive: 356 91% 54%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 210 20% 22%;
+  --ring: 204 88% 53%;
+  --chart-1: 204 88% 65%;
+  --chart-2: 160 100% 50%;
+  --chart-3: 42 93% 65%;
+  --chart-4: 147 79% 55%;
+  --chart-5: 341 75% 65%;
+
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: "JetBrains Mono", Menlo, Monaco, "Courier New", monospace;
+  --radius: 0.75rem;
+  --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.30);
+  --shadow-xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.40);
+  --shadow-sm: 0px 2px 4px -1px hsl(0 0% 0% / 0.40), 0px 1px 2px -1px hsl(0 0% 0% / 0.30);
+  --shadow: 0px 4px 6px -1px hsl(0 0% 0% / 0.50), 0px 2px 4px -2px hsl(0 0% 0% / 0.40);
+  --shadow-md: 0px 6px 8px -2px hsl(0 0% 0% / 0.60), 0px 4px 6px -2px hsl(0 0% 0% / 0.50);
+  --shadow-lg: 0px 10px 15px -3px hsl(0 0% 0% / 0.70), 0px 4px 6px -4px hsl(0 0% 0% / 0.50);
+  --shadow-xl: 0px 20px 25px -5px hsl(0 0% 0% / 0.80), 0px 8px 10px -6px hsl(0 0% 0% / 0.60);
+  --shadow-2xl: 0px 25px 50px -12px hsl(0 0% 0% / 0.90);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
